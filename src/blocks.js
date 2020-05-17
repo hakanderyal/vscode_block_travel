@@ -54,6 +54,9 @@ function changeActiveSelect(editor, newPosn) {
     editor.revealRange(new vscode.Range(newPosn, newPosn))
 }
 
+const emacsExtension = vscode.extensions.getExtension('tuttieee.emacs-mcx')
+const importedApi = emacsExtension.exports
+
 /**
  * Move the cursor down by one `paragraph`.
  * @param {TextEditor} editor The active text editor
@@ -61,7 +64,11 @@ function changeActiveSelect(editor, newPosn) {
 function blockTravelDown(editor) {
     const line = emptyLineBelow(editor)
     const newPosn = new vscode.Position(line.lineNumber, line.text.length) // End of line, in case is last line
-    changeActive(editor, newPosn)
+    if (importedApi.isInMarkMode()) {
+        changeActiveSelect(editor, newPosn)
+    } else {
+        changeActive(editor, newPosn)
+    }
 }
 
 /**
@@ -81,7 +88,11 @@ function blockSelectDown(editor) {
 function blockTravelUp(editor) {
     const line = emptyLineAbove(editor)
     const newPosn = new vscode.Position(line.lineNumber, 0) // Beginning of line, in case is first line
-    changeActive(editor, newPosn)
+    if (importedApi.isInMarkMode()) {
+        changeActiveSelect(editor, newPosn)
+    } else {
+        changeActive(editor, newPosn)
+    }
 }
 
 /**
